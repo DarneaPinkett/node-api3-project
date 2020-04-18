@@ -13,6 +13,12 @@ server.get('/', (req, res) => {
 
 //custom middleware
 
-function logger(req, res, next) {}
+function logger(req, res, next) {
+  const method = req.method;
+  const url = req.originalUrl;
+  const timeStamp = Date.now();
+  console.log(`\nMethod: ${method} \nUrl: ${url} \nTime: ${timeStamp}`);
+  next();
+}
 
 module.exports = server;
