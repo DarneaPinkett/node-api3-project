@@ -53,7 +53,15 @@ router.put('/:id', (req, res) => {
 // custom middleware
 
 function validatePostId(req, res, next) {
-  // do your magic!
+  const {id} = req.params;
+  posts.getById(id)
+  .then(post => {
+    if (!post) {
+      return res.status(400).json({message: 'No post found'});
+    } else {
+      next();
+    }
+  });
 }
 
 module.exports = router;

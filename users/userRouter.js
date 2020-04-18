@@ -91,15 +91,40 @@ router.put('/:id', (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
-  // do your magic!
+  const {id} = req.params;
+  users.getById(id)
+  .then(user => {
+    if(!user) {
+      res.status(400).json({message: 'No user found'});
+    } else {
+      next();
+    }
+  })
 }
 
 function validateUser(req, res, next) {
-  // do your magic!
+  const body = req.body;
+  switch(true) {
+    case !body:
+      return res.status(400).json({message: 'No user data'});
+    case !body.name:
+      return res.status(400).json({message: 'No user name'});
+    default:
+      return next();
+  }
 }
 
 function validatePost(req, res, next) {
-  // do your magic!
+  const body = req.body;
+  switch(true) {
+    case !body:
+      return res.status(400).json({message: 'No post data'});
+    case !body.text:
+      return res.status(400).json({message: 'No post text'});
+    default:
+      return next();
+  }
+  
 }
 
 module.exports = router;
