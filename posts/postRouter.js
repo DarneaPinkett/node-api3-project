@@ -1,9 +1,11 @@
 const express = require('express');
 
+const Posts = require('../posts/postDb');
+
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  posts
+  Posts
   .get()
   .then(posts => {
     res.status(201).json(posts);
@@ -14,8 +16,8 @@ router.get('/', (req, res) => {
   })
 });
 
-router.get('/:id', (req, res) => {
-  posts
+router.get('/:id', validatePostId, (req, res) => {
+  Posts
   .getById(id)
   .then(post => {
     res.status(201).json(post);
@@ -26,9 +28,9 @@ router.get('/:id', (req, res) => {
   })
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validatePostId, (req, res) => {
   const {id} = req.params;
-  posts
+  Posts
   .remove(id)
   .then(post => {
     res.status(201).json(post);
@@ -39,10 +41,10 @@ router.delete('/:id', (req, res) => {
   })
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validatePostId, (req, res) => {
   const {id} = req.params;
   const response = req.body;
-  posts
+  Posts
   .update(id, response)
   .then(response => {
     console.log(error);

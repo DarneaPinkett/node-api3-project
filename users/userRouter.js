@@ -1,9 +1,12 @@
 const express = require('express');
 
+const Users = require('./userDb');
+const Posts = require('../posts/postDb');
+
 const router = express.Router();
 
 router.post('/', (req, res) => {
-  users
+  Users
   .insert(req.body)
   .then(newUsr => {
     res.status(201).json(newUser);
@@ -14,9 +17,9 @@ router.post('/', (req, res) => {
   })
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validatePost, (req, res) => {
   const newPost = {user_is: req.params.id, text: req.body.text};
-  posts
+  Posts
   .insert(newPost)
   .then(change => {
     res.status(201).json({change});
@@ -28,7 +31,7 @@ router.post('/:id/posts', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-  users
+  Users
   .get()
   .then(user => {
     res.status(201).json(user);
@@ -39,8 +42,8 @@ router.get('/', (req, res) => {
   })
 });
 
-router.get('/:id', (req, res) => {
-  users
+router.get('/:id', validateUserId, (req, res) => {
+  Users
   .getById(req.params.id)
   .then(user => {
     res.status(201).json(user);
@@ -51,9 +54,9 @@ router.get('/:id', (req, res) => {
   })
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res) => {
   const {id} = req.params;
-  users
+  Users
   .getUserPosts(id)
   .then(user => {
     res.status(201).json(user);
@@ -64,8 +67,8 @@ router.get('/:id/posts', (req, res) => {
   })
 });
 
-router.delete('/:id', (req, res) => {
-  users
+router.delete('/:id', validateUserId, (req, res) => {
+  Users
   .remove(req.params.id)
   .then(user => {
     res.status(201).json(user);
@@ -76,9 +79,9 @@ router.delete('/:id', (req, res) => {
   })
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUserId, (req, res) => {
   const {id} = req.params;
-  users
+  Users
   .updated(id, req.body)
   .then(user => {
     res.status(201).json(user);
@@ -92,10 +95,10 @@ router.put('/:id', (req, res) => {
 
 function validateUserId(req, res, next) {
   const {id} = req.params;
-  users.getById(id)
+  Users.getById(id)
   .then(user => {
     if(!user) {
-      res.status(400).json({message: 'No user found'});
+      res.status(400).json({message: 'invalid user id'});
     } else {
       next();
     }
@@ -106,9 +109,9 @@ function validateUser(req, res, next) {
   const body = req.body;
   switch(true) {
     case !body:
-      return res.status(400).json({message: 'No user data'});
+      return res.status(400).json({message: 'missing user data'});
     case !body.name:
-      return res.status(400).json({message: 'No user name'});
+      return res.status(400).json({message: "missing required name field"});
     default:
       return next();
   }
@@ -118,7 +121,7 @@ function validatePost(req, res, next) {
   const body = req.body;
   switch(true) {
     case !body:
-      return res.status(400).json({message: 'No post data'});
+      return res.status(400).json({message: 'missing post data'});
     case !body.text:
       return res.status(400).json({message: 'No post text'});
     default:

@@ -1,9 +1,11 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const server = express();
 const userRouter = require('./users/userRouter');
 const postRouter = require('./posts/postRouter');
 
+server.use(bodyParser.json());
 server.use(logger)
 
 server.use('/api/posts', postRouter);
