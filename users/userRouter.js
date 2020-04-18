@@ -3,31 +3,89 @@ const express = require('express');
 const router = express.Router();
 
 router.post('/', (req, res) => {
-  // do your magic!
+  users
+  .insert(req.body)
+  .then(newUsr => {
+    res.status(201).json(newUser);
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({message: 'Could not create user'})
+  })
 });
 
 router.post('/:id/posts', (req, res) => {
-  // do your magic!
+  const newPost = {user_is: req.params.id, text: req.body.text};
+  posts
+  .insert(newPost)
+  .then(change => {
+    res.status(201).json({change});
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({message: "Could not update user post"});
+  })
 });
 
 router.get('/', (req, res) => {
-  // do your magic!
+  users
+  .get()
+  .then(user => {
+    res.status(201).json(user);
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({message: 'Could not get user'});
+  })
 });
 
 router.get('/:id', (req, res) => {
-  // do your magic!
+  users
+  .getById(req.params.id)
+  .then(user => {
+    res.status(201).json(user);
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({message: 'Cound not find user'});
+  })
 });
 
 router.get('/:id/posts', (req, res) => {
-  // do your magic!
+  const {id} = req.params;
+  users
+  .getUserPosts(id)
+  .then(user => {
+    res.status(201).json(user);
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({message: 'Cannot get posts'});
+  })
 });
 
 router.delete('/:id', (req, res) => {
-  // do your magic!
+  users
+  .remove(req.params.id)
+  .then(user => {
+    res.status(201).json(user);
+  })
+  .catch(error => {
+    console.log(error);
+    res.status(500).json({message: 'Cannot delete user'});
+  })
 });
 
 router.put('/:id', (req, res) => {
-  // do your magic!
+  const {id} = req.params;
+  users
+  .updated(id, req.body)
+  .then(user => {
+    res.status(201).json(user);
+  })
+  .catch(error => {
+    res.status(500).json({ message: 'Cannot edit user'});
+  })
 });
 
 //custom middleware
